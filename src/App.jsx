@@ -6,8 +6,8 @@ import Carousel from './component/Carousel';
 
 
 /**
- * 1. Fix Issues on Carrousel
- * 2. every card on Carrousel must have image
+ * 1. Fix Issues on Carrousel : check
+ * 2. every card on Carrousel must have image :
  * 3. the image must come from the api
  * you can use UseEffect or UseState to solve the issues on the project
  */
@@ -44,9 +44,10 @@ function App() {
     setPokeList(data.data.results)
   }
   const onPrevPage = async()=> {
-    setPage(page - 1);
-    const data = await axiosInstance.get(`/pokemon?limit=6&offset=${page}`);
-    setPokeList(data.data.results)
+    if (page > 0)
+      setPage(page - 1);
+      const data = await axiosInstance.get(`/pokemon?limit=6&offset=${page}`);
+      setPokeList(data.data.results)
   
   }
   return (
