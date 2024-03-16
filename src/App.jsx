@@ -21,7 +21,7 @@ function App() {
 
   useEffect(()=>{
     const fetchData = async ()=> {
-      const data = await axiosInstance.get('/pokemon?limit=6&offset=0');
+      const data = await axiosInstance.get('/pokemon?limit=8&offset=0');
       setPokeList(data.data.results)
     }
     fetchData()
@@ -55,13 +55,13 @@ function App() {
   }
   const onNextPage = async()=> {
     setPage(page + 1);
-    const data = await axiosInstance.get(`/pokemon?limit=6&offset=${page}`);
+    const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page}`);
     setPokeList(data.data.results)
   }
   const onPrevPage = async()=> {
     if (page > 0)
       setPage(page - 1);
-      const data = await axiosInstance.get(`/pokemon?limit=6&offset=${page}`);
+      const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page}`);
       setPokeList(data.data.results)
   
   }
