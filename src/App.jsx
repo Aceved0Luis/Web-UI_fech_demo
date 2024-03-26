@@ -17,38 +17,42 @@ function App() {
   const [selectedPoke, setSelectedPoke] = useState({})
   const [page, setPage] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false)
+
   useEffect(()=>{
     const fetchData = async ()=> {
-      const data = await axiosInstance.get('/pokemon?limit=6&offset=0');
+      const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page * 8}`);
       setPokeList(data.data.results)
     }
     fetchData()
-  },[])
+  },[page])
 
   const getInfo = async (url)=> {
     const data = await axiosInstance.get(url)
     setSelectedPoke({img: data.data.sprites.front_default, stats:data.data.stats})
-  }
+  } 
+
   const getPokemonList = ()=> {
     return pokeList.map((pokemon)=>{
       return {
         name: pokemon.name,
-        img: '/whos.jpg',
+        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split(`/`)[6]}.png`,
         onClick: ()=> getInfo(pokemon.url)
       }
     })
   }
-  const onNextPage = async()=> {
+  const onNextPage = async() => {
     setPage(page + 1);
-    const data = await axiosInstance.get(`/pokemon?limit=6&offset=${page}`);
+    const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page * 8}`);
     setPokeList(data.data.results)
   }
-  const onPrevPage = async()=> {
-    setPage(page - 1);
-    const data = await axiosInstance.get(`/pokemon?limit=6&offset=${page}`);
-    setPokeList(data.data.results)
-  
+  const onPrevPage = async() => {
+    if (page > 0){
+      setPage(page - 1);
+      const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page * 8}`);
+      setPokeList(data.data.results)
+    }
   }
+
   return (
     <div className={`flex flex-col w-full h-screen items-center ${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-8`}>
       <button className='ml-auto' onClick={()=> setIsDarkMode(!isDarkMode)}>
