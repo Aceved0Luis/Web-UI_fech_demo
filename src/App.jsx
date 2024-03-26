@@ -6,8 +6,8 @@ import Carousel from './component/Carousel';
 
 
 /**
- * 1. Fix Issues on Carrousel : check
- * 2. every card on Carrousel must have image :
+ * 1. Fix Issues on Carrousel
+ * 2. every card on Carrousel must have image
  * 3. the image must come from the api
  * you can use UseEffect or UseState to solve the issues on the project
  */
@@ -15,28 +15,16 @@ import Carousel from './component/Carousel';
 function App() {
   const [pokeList, setPokeList] = useState([])
   const [selectedPoke, setSelectedPoke] = useState({})
-  const [imgPoke, setImgPoke] = useState({})
   const [page, setPage] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(()=>{
     const fetchData = async ()=> {
-      const data = await axiosInstance.get('/pokemon?limit=8&offset=0');
+      const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page * 8}`);
       setPokeList(data.data.results)
     }
     fetchData()
-  },[])
-
-  useEffect(()=>{
-    const getImage = async (url)=> {
-      const image = await axiosInstance.get(url)
-      setImgPoke({name:image.data.name ,img: image.data.sprites.front_default})
-    }
-    pokeList.map((poke)=>{
-      getImage(poke.url)
-    })
-    
-  },[pokeList])
+  },[page])
 
   const getInfo = async (url)=> {
     const data = await axiosInstance.get(url)
@@ -45,25 +33,24 @@ function App() {
 
   const getPokemonList = ()=> {
     return pokeList.map((pokemon)=>{
-      //const img = imgPoke.filter(photo => photo.name === pokemon.name)
       return {
         name: pokemon.name,
-        img: imgPoke.img,
+        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split(`/`)[6]}.png`,
         onClick: ()=> getInfo(pokemon.url)
       }
     })
   }
-  const onNextPage = async()=> {
+  const onNextPage = async() => {
     setPage(page + 1);
-    const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page}`);
+    const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page * 8}`);
     setPokeList(data.data.results)
   }
-  const onPrevPage = async()=> {
-    if (page > 0)
+  const onPrevPage = async() => {
+    if (page > 0){
       setPage(page - 1);
-      const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page}`);
+      const data = await axiosInstance.get(`/pokemon?limit=8&offset=${page * 8}`);
       setPokeList(data.data.results)
-  
+    }
   }
 
   return (
